@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:7.2.3
+    container_name: redis-container
+    networks:
+      - redis-net
+  
+  redisinsight:
+    image: redislabs/redisinsight:1.14.0
+    container_name: redisinsight-container
+    environment:
+      - REDIS_URI=redis://redis-container:6379
+      - PASSWORD=P@ssw0rd
+    ports:
+      - "8001:8001"
+    networks:
+      - redis-net
+
+networks:
+  redis-net:
+    driver: bridge
