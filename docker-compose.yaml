@@ -4,20 +4,27 @@ services:
   redis:
     image: redis:7.2.3
     container_name: redis-container
+    ports:
+      - 6379:6379
     networks:
       - redis-net
-  
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+
   redisinsight:
     image: redislabs/redisinsight:1.14.0
     container_name: redisinsight-container
     environment:
       - REDIS_URI=redis://redis-container:6379
-      - PASSWORD=P@ssw0rd
+      - PASSWORD=password
     ports:
       - "8001:8001"
     networks:
       - redis-net
-
+    depends_on:
+      - redis
+      
 networks:
   redis-net:
     driver: bridge
